@@ -3,7 +3,7 @@ import { authHeader } from './';
 
 
 // const _baseUrl = 'https://localhost:44397/api/';
-export const _baseUrl = 'https://localhost:5001/api/';
+export const _baseUrl = 'https://localhost:5910/api/v1/';
 
 const register = async (registerObj) => {
     const result = await Axios.post(`${_baseUrl}auth/register`, registerObj);
