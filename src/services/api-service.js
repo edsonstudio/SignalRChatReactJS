@@ -3,80 +3,80 @@ import { authHeader } from './';
 
 
 // const _baseUrl = 'https://localhost:44397/api/';
-export const _baseUrl = 'https://localhost:5910/api/v1/';
+export const _baseUrl = 'https://localhost:5101/api/v2/';
 
 const register = async (registerObj) => {
-    const result = await Axios.post(`${_baseUrl}auth/register`, registerObj);
+    const result = await Axios.post(`${_baseUrl}identity/nova-conta`, registerObj);
     return await result;
 };
 
 const login = async (loginObj) => {
-    const result = await Axios.post(`${_baseUrl}auth/login`, loginObj);
+    const result = await Axios.post(`${_baseUrl}identity/autenticar`, loginObj);
     return await result;
 };
 
-const searchForUsers = async (value, token) => {
+const searchForUsers = async (value, accessToken) => {
         const result = await Axios.get(`${_baseUrl}users/search?name=${value}`, {
-            headers: authHeader(token)
+            headers: authHeader(accessToken)
         });
         return await result;
 };
 
-const uploadAvatar = async (fromData, token) =>{
+const uploadAvatar = async (fromData, accessToken) =>{
     const result = await Axios.post(`${_baseUrl}avatars/upload`, fromData, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };
-const getProfile = async (token) =>{
+const getProfile = async (accessToken) =>{
     console.log("getProfile")
     const result = await Axios.get(`${_baseUrl}users/getprofile`, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };
 
-const getMessages = async (threadId, token) => {
+const getMessages = async (threadId, accessToken) => {
     const result = await Axios.get(`${_baseUrl}thread/getmessages/${threadId}`, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };
 
-const getThreads = async (token) => {
+const getThreads = async (accessToken) => {
     const result = await Axios.get(`${_baseUrl}hey/getthreads`, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };
 
-const createThread = async (oponentViewModel, token) => {
+const createThread = async (oponentViewModel, accessToken) => {
     const result = await Axios.post(`${_baseUrl}hey/createthread`, {
         OponentVM: oponentViewModel
     }, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };
 
-const sendMessageToApi = async (messageViewModel, token) => {
+const sendMessageToApi = async (messageViewModel, accessToken) => {
     const result = await Axios.post(`${_baseUrl}hey/send`, messageViewModel, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };
 
-const searchForMessageInThread = async (token, params) => {
+const searchForMessageInThread = async (accessToken, params) => {
     const result = await Axios.get(`${_baseUrl}thread/search`, {
-        headers: authHeader(token),
+        headers: authHeader(accessToken),
         params: params
     });
     return await result;
 }
 
-const updateUsersProfile = async (token, user) => {
+const updateUsersProfile = async (accessToken, user) => {
     const result = await Axios.post(`${_baseUrl}users/update`, user, {
-        headers: authHeader(token)
+        headers: authHeader(accessToken)
     });
     return await result;
 };

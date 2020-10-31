@@ -26,15 +26,19 @@ const emailRegex = RegExp(
 class Register extends Component {
 
     state = {
-        userName: null,
+        name: null,
+        cpf: null,
+        phone: null,
         email: null,
         password: null,
-        repeatPassword: null,
+        confirmPassword: null,
         formErrors: {
-            userName:'',
+            name:'',
+            cpf: '',
+            phone: '',
+            email: '',
             password: '',
-            repeatPassword: '',
-            email:''
+            confirmPassword: ''
         }
     };
 
@@ -46,8 +50,14 @@ class Register extends Component {
         let formErrors = this.state.formErrors;
 
         switch(name){
-            case "userName":
-                formErrors.userName = value.length < 3 ? "minimum 3 characters required fro user name" : "";
+            case "name":
+                formErrors.name = value.length < 3 ? "minimum 3 characters required fro user name" : "";
+            break;
+            case "cpf":
+                formErrors.cpf = value.length < 3 ? "O CPF precisa ter 11 números" : "";
+            break;
+            case "phone":
+                formErrors.phone = value.length > 15 ? "O telefone precisa ter entre 9 e 15 caracteres." : "";
             break;
             case "email":
                 formErrors.email = emailRegex.test(value) ? "" : "invalid email address, please check it";
@@ -55,8 +65,8 @@ class Register extends Component {
             case "password":
                 formErrors.password = value.length < 6 ? "minimum 6 characaters required fro password" : "";
             break;
-            case "repeatPassword":
-                formErrors.repeatPassword = value !== this.state.password ? "Password didn't match, please check!" : "";    
+            case "confirmPassword":
+                formErrors.confirmPassword = value !== this.state.password ? "Password didn't match, please check!" : "";    
             break;
             default:
                 break;
@@ -71,11 +81,15 @@ class Register extends Component {
     onSubmit = (event) => {
         event.preventDefault();
         if(formValid(this.state)){
-            const {userName, email, password} = this.state;
+            const {name, cpf, phone, email, password, confirmPassword} = this.state;
             const registerObj = {
-                username: userName,
+                name: name,
+                cpf: cpf,
+                phone: phone,
                 email: email,
-                password: password
+                password: password,
+                confirmPassword: confirmPassword
+                
             };
             register(registerObj).then(result => {
                 var data = JSON.parse(localStorage.getItem('user-data'));
@@ -95,10 +109,10 @@ class Register extends Component {
                         let formErrors = {...this.state.formErrors};
                         formErrors.email = data.email;
                         this.setState({formErrors});
-                    break;
-                    case "username":
+                    break;                   
+                    case "name":
                         let formErrors2 =  {...this.state.formErrors};
-                        formErrors2.userName = data.username;
+                        formErrors2.name = data.name;
                         this.setState({formErrors: formErrors2});
                     break;    
                     default:
@@ -117,18 +131,44 @@ class Register extends Component {
                     <h1>Create Account</h1>
                     <form noValidate onSubmit={this.onSubmit}>
                         <div className="firstName">
-                            <label htmlFor="firstName">User Name</label>
+                            <label htmlFor="firstName">Name</label>
                             <input 
-                                className={formErrors.userName.length > 0 ? "error" : null}
-                                placeholder="User Name"
+                                className={formErrors.name.length > 0 ? "error" : null}
+                                placeholder="Name"
                                 type="text"
-                                name="userName"
+                                name="name"
                                 noValidate 
                                 onChange={ this.onChange}
                                 />
                         </div>
-                        {formErrors.userName.length > 0 && (
-                        <span className="errorMessage">{formErrors.userName}</span>)}
+                        {formErrors.name.length > 0 && (<span className="errorMessage">{formErrors.name}</span>)}
+
+                        <div className="firstName">
+                            <label htmlFor="firstName">CPF</label>
+                            <input 
+                                className={formErrors.cpf.length > 0 ? "error" : null}
+                                placeholder="CPF"
+                                type="text"
+                                name="cpf"
+                                noValidate 
+                                onChange={ this.onChange}
+                                />
+                        </div>
+                        {formErrors.cpf.length > 0 && (<span className="errorMessage">{formErrors.cpf}</span>)}
+
+                        <div className="firstName">
+                            <label htmlFor="firstName">Telefone</label>
+                            <input 
+                                className={formErrors.phone.length > 0 ? "error" : null}
+                                placeholder="Telefone"
+                                type="text"
+                                name="phone"
+                                noValidate 
+                                onChange={ this.onChange}
+                                />
+                        </div>
+                        {formErrors.phone.length > 0 && (<span className="errorMessage">{formErrors.phone}</span>)}
+
                         <div className="email">
                             <label htmlFor="email">Email</label>
                             <input 
@@ -155,17 +195,17 @@ class Register extends Component {
                         {formErrors.password.length > 0 && (
                         <span className="errorMessage">{formErrors.password}</span>)}
                         <div className="password">
-                            <label htmlFor="password">Repeat password</label>
+                            <label htmlFor="password">Confirm Password</label>
                             <input 
-                                className={formErrors.repeatPassword.length > 0 ? "error" : null}
-                                placeholder="Repeat password"
+                                className={formErrors.confirmPassword.length > 0 ? "error" : null}
+                                placeholder="Confirm Password"
                                 type="password"
-                                name="repeatPassword"
+                                name="confirmPassword"
                                 noValidate 
                                 onChange={ this.onChange }
                                 />
                         </div>
-                        {formErrors.repeatPassword.length > 0 && (<span className="errorMessage">{formErrors.repeatPassword}</span>)}
+                        {formErrors.confirmPassword.length > 0 && (<span className="errorMessage">{formErrors.confirmPassword}</span>)}
                         <div className="createAccount">
                             <button type="submit">Create Account</button>
                             <Link to="/login"><small>Already Have an Account?</small></Link>

@@ -26,10 +26,10 @@ class Dashboard extends Component  {
             hubConnection: null,
             isEdit: false
         };
-        this.connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:5910/chat", {
-            accessTokenFactory: () => this.props.user.token
+        this.connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:5101/chat", {
+            accessTokenFactory: () => this.props.user.accessToken
         }).build();
-        this.token = this.props.user.token;
+        this.accessToken = this.props.user.accessToken;
     }
     
     // connect = async (signalRConnection) => {
@@ -44,13 +44,13 @@ class Dashboard extends Component  {
     //     return new Promise(resolve => setTimeout(resolve, msec));
     // }
     componentDidMount(){
-        const {token} = this.props.user;
+        const {accessToken} = this.props.user;
         console.log("Debug")
-        getProfile(token).then(res => {
+        getProfile(accessToken).then(res => {
             console.log(res.data);
             this.setState({
                 userProfile: res.data,
-                userName: res.data.username
+                userName: res.data.userName
             });
         }).catch(err => {
             console.error(err);
@@ -75,7 +75,7 @@ class Dashboard extends Component  {
 
    update = async () => {
         //Getting user's threads
-        await getThreads(this.token).then(res => {
+        await getThreads(this.accessToken).then(res => {
             const { status } = res;
             if(status !== 204){
                const { data: threads} = res;
@@ -205,7 +205,7 @@ class Dashboard extends Component  {
     createThread = (oponentVM) => {
         var thread = this.state.threads.find(t => t.oponentVM.id === oponentVM.id || t.owner === oponentVM.id);
         if(!thread){
-            createThread(oponentVM, this.token).then(res => {
+            createThread(oponentVM, this.accessToken).then(res => {
                 const{ threadId } = res.data;
                 this.setState({threadId, oponentId: oponentVM.id, oponentProfile: oponentVM});
             })
@@ -233,7 +233,7 @@ class Dashboard extends Component  {
             ThreadId: this.state.threadId,
             Username: this.state.userName
         };
-        sendMessageToApi(messageViewModel, this.token).then(res => {
+        sendMessageToApi(messageViewModel, this.accessToken).then(res => {
             if(res.status === 201){
                 console.log("Message succesfully been sent");
             }
