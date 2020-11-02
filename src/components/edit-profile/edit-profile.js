@@ -51,14 +51,14 @@ class EditProfile extends Component{
     };
 
     onSaveChanges = async () => {
-        const { token }  = this.props.user;
+        const { accessToken }  = this.props.user;
         const {id, username, email, avatarFileName } = this.state;
-        const dbProfile = await getProfile(token);
+        const dbProfile = await getProfile(accessToken);
         const userObj = {
             id, username, email, avatarFileName
         };
         if(JSON.stringify(userObj) !== JSON.stringify(dbProfile.data)){
-            await updateUsersProfile(token, userObj).then(res => {
+            await updateUsersProfile(accessToken, userObj).then(res => {
                 if(res.status === 200){
                     console.log('Your profile succesfuly updated')
                 };
@@ -69,11 +69,11 @@ class EditProfile extends Component{
     };
 
     fileUploadHandler = () => {
-        const { token } = this.props.user;
+        const { accessToken } = this.props.user;
         var fromData = new FormData();
         if(this.state.selsectedFile){
             fromData.append('image', this.state.selsectedFile, this.state.selsectedFile.name);
-            uploadAvatar(fromData, token).then(res => {
+            uploadAvatar(fromData, accessToken).then(res => {
                 this.setState({avatarFileName: res.data});
             });
         }else{

@@ -45,9 +45,9 @@ class ThreadList extends React.Component {
        
     }
     handleSearch = (e) => {
-        const { token } = this.props.user;
+        const { accessToken } = this.props.user;
         const { value } = e.target;
-        searchForUsers(value, token).then(res => {this.setState({users: res.data});});
+        searchForUsers(value, accessToken).then(res => {this.setState({users: res.data});});
         this.setState({search: value});
     };
     clearSearch = () =>{
