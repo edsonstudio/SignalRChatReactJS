@@ -227,7 +227,7 @@ class Dashboard extends Component  {
             return;
         };
         const messageViewModel = {
-            SenderId: this.state.userProfile.id,
+            SenderId: this.state.userProfile.id, //this.props.user.id,
             Text: message,
             ThreadId: this.state.threadId,
             Username: this.state.userName
