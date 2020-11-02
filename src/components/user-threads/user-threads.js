@@ -20,13 +20,13 @@ const UserThreads = (props) => {
         
         const items = threads.map(thread => {
             const active = thread.id === threadId ? 'active' : '';
-            const youPrefix = thread.lastMessage.senderId === profile.id ? `You: ${thread.lastMessage.text}` : thread.lastMessage.text
-            const lasteMessage = thread.lastMessage ? youPrefix : 'No messages';
-            const typingOrLM = thread.oponentVM.isTyping ? 'Typing...' : lasteMessage;
+            const youPrefix = thread.lastMessage.senderId === profile.id ? `Você: ${thread.lastMessage.text}` : thread.lastMessage.text
+            const lasteMessage = thread.lastMessage ? youPrefix : 'Sem mensagens';
+            const typingOrLM = thread.oponentVM.isTyping ? 'Digitando...' : lasteMessage;
             const { oponentVM } = thread; 
-            const imagePath = oponentVM.avatarFileName === null ? getDefaultImageUrl(oponentVM.username) : getUserAvatar(oponentVM.avatarFileName);
+            const imagePath = oponentVM.avatarFileName === null ? getDefaultImageUrl(oponentVM.userName) : getUserAvatar(oponentVM.avatarFileName);
            
-            const lastMessageTime = lasteMessage !== 'No messages' ? getDateInfoForThread(thread.lastMessage.time) : '';
+            const lastMessageTime = lasteMessage !== 'Sem mensagens' ? getDateInfoForThread(thread.lastMessage.time) : '';
             const { isOnline } = thread.oponentVM;
             const classStatus = isOnline ? 'online' : '';
             return(

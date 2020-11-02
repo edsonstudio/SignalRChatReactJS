@@ -72,9 +72,9 @@ class MessageList extends React.Component {
     }
 
     getMessagesForThread = (threadId) => {
-        const {token} = this.props.user;
+        const {accessToken} = this.props.user;
             this.setState({messages: []});
-            getMessages(threadId, token).then(res => {
+            getMessages(threadId, accessToken).then(res => {
                 this.setState({messages: res.data});
                 
             }).catch(err => console.log(err));
@@ -91,14 +91,14 @@ class MessageList extends React.Component {
         }
     };
     searchMessages = (search) => {
-        const { token } = this.props.user;
+        const { accessToken } = this.props.user;
         const {threadId } = this.state;
         const params = {
             term: search,
             threadid: threadId
         };
 
-       searchForMessageInThread(token, params).then(res => {
+       searchForMessageInThread(accessToken, params).then(res => {
             this.setState({searchResult: res.data})
         }).catch(err => console.log(err));
         

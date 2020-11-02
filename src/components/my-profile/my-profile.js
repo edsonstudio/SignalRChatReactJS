@@ -34,23 +34,23 @@ class MyProfile extends Component {
         if(this.state.profile !== null){
             
             const {  handleLogOut} = this.props;
-            const { avatarFileName, username} = this.state.profile;
-            const imagePath = !avatarFileName ? getDefaultImageUrl(username) : getUserAvatar(avatarFileName);
+            const { avatarFileName, userName} = this.state.profile;
+            const imagePath = !avatarFileName ? getDefaultImageUrl(userName) : getUserAvatar(avatarFileName);
             content = (
                 <React.Fragment>
                     <div className="avatar">
                         <span className="edit" onClick={() => this.props.handleEditorClose()}>
                             <i className="material-icons">create</i>
                         </span>
-                        <img onError={defaultimage} src={imagePath} alt="avatar" name={username}/>
+                        <img onError={defaultimage} src={imagePath} alt="avatar" name={userName}/>
                     </div>
                     <div className="my-username">
-                        <p>{username}</p>
+                        <p>{userName}</p>
                     </div>
                     <div className="navbar" onClick={() => handleLogOut()}>
                         <div className="log-out" >
                             <i className="material-icons">power_settings_new</i>
-                            <p>Log Out</p>
+                            <p>Sair</p>
                         </div>
                     </div>
                 </React.Fragment>

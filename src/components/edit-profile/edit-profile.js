@@ -15,16 +15,16 @@ class EditProfile extends Component{
     };
 
     componentDidMount(){
-        const { username, email, avatarFileName, id } = this.props.profile;
+        const { userName, email, avatarFileName, id } = this.props.profile;
         this.setState({
-            avatarFileName, email, username, id});
+            avatarFileName, email, userName, id});
     };
     componentDidUpdate(prevProps, prevState){
         if(prevProps.profile !== this.props.profile){
-            const { email, username, avatarFileName, id } = this.props.profile;
+            const { email, userName, avatarFileName, id } = this.props.profile;
             this.setState({
                 email,
-                username,
+                userName,
                 avatarFileName,
                 id
             });
@@ -52,10 +52,10 @@ class EditProfile extends Component{
 
     onSaveChanges = async () => {
         const { accessToken }  = this.props.user;
-        const {id, username, email, avatarFileName } = this.state;
+        const {id, userName, email, avatarFileName } = this.state;
         const dbProfile = await getProfile(accessToken);
         const userObj = {
-            id, username, email, avatarFileName
+            id, userName, email, avatarFileName
         };
         if(JSON.stringify(userObj) !== JSON.stringify(dbProfile.data)){
             await updateUsersProfile(accessToken, userObj).then(res => {
@@ -87,14 +87,14 @@ class EditProfile extends Component{
         //     return (<h5>Loading</h5>);
         // }
         
-        const { avatarFileName, username, email, selsectedFile, isProfileCnanged } = this.state;
+        const { avatarFileName, userName, email, selsectedFile, isProfileCnanged } = this.state;
 
-        const imagePath = !avatarFileName ? getDefaultImageUrl(username) : getUserAvatar(avatarFileName);
+        const imagePath = !avatarFileName ? getDefaultImageUrl(userName) : getUserAvatar(avatarFileName);
         return(
             <div className="edit-profile">
                 <h5>EDIT PROFILE</h5>
                 <div className="edit-image">
-                    <img onError={defaultimage} src={imagePath} alt="avatar" name={username}/>
+                    <img onError={defaultimage} src={imagePath} alt="avatar" name={userName}/>
                     <h6>Upload new avatar...</h6>
                 </div>
                 <div className="file-upload">
@@ -104,8 +104,8 @@ class EditProfile extends Component{
                 
                 <form className="edit-profile form">
                     <div className="user-name">
-                        <label htmlFor="">Username</label>
-                        <input type="text" value={username} onChange={this.handleChange} formNoValidate name="username"/>
+                        <label htmlFor="">User Name</label>
+                        <input type="text" value={userName} onChange={this.handleChange} formNoValidate name="userName"/>
                     </div>
                     <div className="user-email">
                         <label htmlFor="">Email</label>

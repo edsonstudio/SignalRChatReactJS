@@ -30,14 +30,14 @@ import { getDefaultImageUrl, getUserAvatar, defaultimage } from '../../services'
                 <p></p>
         </div>)
         }
-        const satus = profile.isOnline ? 'online now' : 'offline';
-        const typingStatus = profile.isTyping ? 'typing...' : satus;
+        const status = profile.isOnline ? 'Online agora' : 'Offline';
+        const typingStatus = profile.isTyping ? 'Digitando...' : status;
         return(
             <div className="oponent-profile">
                 <img onError={defaultimage} src={imagePath} alt="avatar" name={profile.username}/>
                 <div className="info">
                     <p className="username">{profile.username}</p>
-                    <p className="satus">{typingStatus}</p>
+                    <p className="status">{typingStatus}</p>
                 </div>
                 <div className="aside">
                     <div className="aside-search">

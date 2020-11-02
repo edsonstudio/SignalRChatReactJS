@@ -191,7 +191,7 @@ class Dashboard extends Component  {
                 threads.forEach(thread => {
                     let { oponentVM } = thread;
                     if(oponentVM.id === profile.id){
-                        thread.oponentVM.username = profile.username;
+                        thread.oponentVM.Username = profile.Username;
                         thread.oponentVM.email = profile.email;
                     }
                 });
@@ -231,7 +231,7 @@ class Dashboard extends Component  {
             SenderId: this.props.user.id,
             Text: message,
             ThreadId: this.state.threadId,
-            Username: this.state.userName
+            Username: this.state.username
         };
         sendMessageToApi(messageViewModel, this.accessToken).then(res => {
             if(res.status === 201){
@@ -260,9 +260,9 @@ class Dashboard extends Component  {
     handleTyping = (e) => {
         if(e.value.length === 0 ){
             console.log('stop')
-            this.onStopTyping(e.name);
+            this.onStopTyping(e.userName);
         }else{
-            this.onTyping(e.name);
+            this.onTyping(e.userName);
         }
     }
 
