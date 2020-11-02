@@ -6,7 +6,6 @@ import SendMessageForm from './send-message-form';
 import ThreadList from '../components/thread-list';
 import MyProfile from './my-profile';
 import {getProfile, getThreads, createThread, sendMessageToApi } from '../services';
-import { _baseUrl } from '../services/api-service';
 
 
 class Dashboard extends Component  {
@@ -228,10 +227,10 @@ class Dashboard extends Component  {
             return;
         };
         const messageViewModel = {
-            SenderId: this.props.user.id,
+            SenderId: this.state.userProfile.id,
             Text: message,
             ThreadId: this.state.threadId,
-            Username: this.state.username
+            Username: this.state.userName
         };
         sendMessageToApi(messageViewModel, this.accessToken).then(res => {
             if(res.status === 201){

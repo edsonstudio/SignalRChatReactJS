@@ -37,21 +37,21 @@ const getProfile = async (accessToken) =>{
 };
 
 const getMessages = async (threadId, accessToken) => {
-    const result = await Axios.get(`${_baseUrl}thread/getmessages/${threadId}`, {
+    const result = await Axios.get(`${_baseUrl}Thread/getmessages/${threadId}`, {
         headers: authHeader(accessToken)
     });
     return await result;
 };
 
 const getThreads = async (accessToken) => {
-    const result = await Axios.get(`${_baseUrl}hey/getthreads`, {
+    const result = await Axios.get(`${_baseUrl}Hey/getthreads`, {
         headers: authHeader(accessToken)
     });
     return await result;
 };
 
 const createThread = async (oponentViewModel, accessToken) => {
-    const result = await Axios.post(`${_baseUrl}hey/createthread`, {
+    const result = await Axios.post(`${_baseUrl}Hey/createthread`, {
         OponentVM: oponentViewModel
     }, {
         headers: authHeader(accessToken)
@@ -60,14 +60,14 @@ const createThread = async (oponentViewModel, accessToken) => {
 };
 
 const sendMessageToApi = async (messageViewModel, accessToken) => {
-    const result = await Axios.post(`${_baseUrl}hey/send`, messageViewModel, {
+    const result = await Axios.post(`${_baseUrl}Hey/send`, messageViewModel, {
         headers: authHeader(accessToken)
     });
     return await result;
 };
 
 const searchForMessageInThread = async (accessToken, params) => {
-    const result = await Axios.get(`${_baseUrl}thread/search`, {
+    const result = await Axios.get(`${_baseUrl}Thread/search`, {
         headers: authHeader(accessToken),
         params: params
     });

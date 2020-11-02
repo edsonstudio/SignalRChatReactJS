@@ -92,7 +92,7 @@ class MessageList extends React.Component {
     };
     searchMessages = (search) => {
         const { accessToken } = this.props.user;
-        const {threadId } = this.state;
+        const { threadId } = this.state;
         const params = {
             term: search,
             threadid: threadId
@@ -105,16 +105,16 @@ class MessageList extends React.Component {
     }
     mapMessages = (messages) => {
         return Object.keys(messages).map((item, index) => {
-            const dateMessages = messages[item].map(({ username, text, time, id, senderId }) => {
+            const dateMessages = messages[item].map(({ id, senderId, text, username, time }) => {
                 var myDate = getDateInfoForMessage(time);
                 
                 return(
                     <Message key={id} 
-                             username={username} 
+                             senderId={senderId}
                              text={text} 
+                             username={username} 
                              time={myDate} 
                              curentUsername={this.props.username}
-                             senderId={senderId}
                              profile={this.state.userProfile}
                              opponentProfile={this.state.oponentProfile} />
                 );
