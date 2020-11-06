@@ -25,9 +25,13 @@ class Dashboard extends Component  {
             hubConnection: null,
             isEdit: false
         };
-        this.connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:5101/chat", {
-            accessTokenFactory: () => this.props.user.accessToken
-        }).build();
+
+        this.connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:5101/chat", {
+                accessTokenFactory: () => this.props.user.accessToken
+            })
+            .build();
+
         this.accessToken = this.props.user.accessToken;
     }
     
@@ -45,6 +49,7 @@ class Dashboard extends Component  {
     componentDidMount(){
         const {accessToken} = this.props.user;
         console.log("Debug")
+        
         getProfile(accessToken).then(res => {
             console.log(res.data);
             this.setState({
@@ -55,18 +60,24 @@ class Dashboard extends Component  {
             console.error(err);
             this.props.history.push("/login");
         });
-        this.connection.start(() => console.log("started"))
-        .catch(err => {
-            console.log(err)
-            this.props.history.push("/login");
-        });
+
         // this.connect(this.connection);
         this.connection.onclose((e) => {
+            console.log('fechando conexao com o SignalR');
             console.log(e)
         });
         this.connection.on('ReciveConnectionId', connId => {
+            console.log("Conexao com signalR aberta");
             console.log(`CuurentConnectionId: ${connId}`);
         });
+
+        this.connection
+            .start()
+            .then(() => console.log("conexao iniciada"))
+            .catch(err => {
+                console.log(err)
+                this.props.history.push("/login");
+            });
 
         this.setState({hubConnection: this.connection});
         this.update();
@@ -90,7 +101,10 @@ class Dashboard extends Component  {
         });
 
         this.connection.on('ReciveAvatar', (avatar) => {
+            console.log('RECEIVED AVATAR BY BACKEND',avatar);
+            
             const { userProfile, oponentProfile, threads } = this.state;
+
             if(avatar.uploaderId === userProfile.id){
                 userProfile.avatarFileName = avatar.body.value;
             };
@@ -106,7 +120,10 @@ class Dashboard extends Component  {
         });
 
         this.connection.on('ReciveMessage', (message) => {
-            const { threads} = this.state;
+            console.log('RECEIVED BY BACKEND', message);
+            const { threads } = this.state;
+            console.log('TREAD OF FRONEND', threads);
+
             console.log(message);
             threads.forEach(t => {
                 if(t.id === message.threadId){
@@ -117,16 +134,20 @@ class Dashboard extends Component  {
         });
 
         this.connection.on('ReciveTypingStatus', ({userId, threadId}) => {
-            if(!threadId){
-                return;
-            }
-            const {threads: currentThreads } = this.state;
-            const { oponentProfile: currentOpponentProfile } = this.state;
+            const {
+                threads: currentThreads,
+                oponentProfile: currentOpponentProfile
+            } = this.state;
+
             if(currentOpponentProfile.id === userId && currentOpponentProfile.isTyping === false){
                 currentOpponentProfile.isTyping = true;
                 this.setState(() => ({oponentProfile: currentOpponentProfile}));
                 this.opponentTimer = setTimeout(() => {currentOpponentProfile.isTyping = false; this.setState({oponentProfile: currentOpponentProfile})}, 3000);
-                
+            }
+
+            if(!threadId){
+                console.log('CANNOT HANDLER RECEIVE TYPING STATUS');
+                return; 
             }
             currentThreads.forEach(t => {
                 if(t.id === threadId){
@@ -134,7 +155,10 @@ class Dashboard extends Component  {
                     if(oponentVM.id === userId && !oponentVM.isTyping){
                         t.oponentVM.isTyping = true;
                         this.setState({threads: currentThreads});
-                        setTimeout(() => {t.oponentVM.isTyping = false; this.setState({threads: currentThreads})}, 3000);
+                        setTimeout(() => {
+                            t.oponentVM.isTyping = false;
+                            this.setState({threads: currentThreads})
+                        }, 3000);
                     }
                 }
             });
@@ -201,6 +225,7 @@ class Dashboard extends Component  {
 
     };
     //change oponent name to id
+    //TODO: ANALISAR
     createThread = (oponentVM) => {
         var thread = this.state.threads.find(t => t.oponentVM.id === oponentVM.id || t.owner === oponentVM.id);
         if(!thread){
@@ -212,33 +237,44 @@ class Dashboard extends Component  {
                 console.log(err.response.data.threadId);
                 const { threadId } = err.response.data;
                 this.setState({threadId, oponentId: oponentVM.id, oponentProfile: oponentVM});
-            });    
+            });
         }else{
             this.setState({threadId: thread.id, oponentId: oponentVM.id, oponentProfile: oponentVM});
         };
     };
 
     sendMessage = (message) => {
-        if(message.length === 0 || message === ''){
+        console.log("RECEIVE MESSAGE TO SEND");
+        console.log(message);
+
+        if(!message.length){
+            console.log('NO MESSAGE TO SEND');
             return;
         }
+
         if(!this.state.threadId){
             console.log("Thread isn't choosen");
             return;
         };
+
         const messageViewModel = {
             SenderId: this.state.userProfile.id, //this.props.user.id,
             Text: message,
             ThreadId: this.state.threadId,
             Username: this.state.userName
         };
-        sendMessageToApi(messageViewModel, this.accessToken).then(res => {
-            if(res.status === 201){
-                console.log("Message succesfully been sent");
-            }
-        }).catch(err => {
-            console.log(err.response.data);
-        });    
+
+        console.log("MESSAGE IS AVAILABLE TO BE SEND");
+            
+
+        sendMessageToApi(messageViewModel, this.accessToken)
+            .then(res => {
+                if(res.status === 201){
+                    console.log("Message succesfully been sent");
+                }
+            }).catch(err => {
+                console.log(err.response.data);
+            });
     };
 
     subscribeToThread = (threadId, oponentVm) => {
@@ -257,17 +293,39 @@ class Dashboard extends Component  {
     }
 
     handleTyping = (e) => {
-        if(e.value.length === 0 ){
-            console.log('stop')
-            this.onStopTyping(e.userName);
-        }else{
-            this.onTyping(e.userName);
-        }
+        console.log('TYPING FN RECEIVE AN EVENT');
+        console.log(e);
+        let my_user_id = this.state.userId;
+
+        if (!e.value.length)  this.onStopTyping(my_user_id);
+        else  this.onTyping(my_user_id);
+
+        // if(e.value.length === 0 ){
+        //     console.log('stop')
+        //     this.onStopTyping(e.userName);
+        // }else{
+        //     this.onTyping(e.userName);
+        // }
     }
+
+    handlerSendMessage = () => {
+        let _this = this;
+        
+        return (message) => {
+            console.log('SEND MESSAGE');
+            console.log(this.props.user.id);
+            _this.sendMessage(message);
+        }
+    };
+
+    onSendMessage = (id, message) => {
+        this.connection.invoke('SendMessage', id, message);
+    };
 
     onTyping = (id) => {
         this.connection.invoke('OnTyping', id);
     };
+
     onStopTyping = (id) => {
         this.connection.invoke('OnStopTyping', id);
     };
@@ -277,14 +335,14 @@ class Dashboard extends Component  {
    
     return(
         <div className="app">
-           <MyProfile  handleLogOut={this.handleLogOut} profile={userProfile} handleEditorClose={this.handleEditorClose}/>
+            <MyProfile  handleLogOut={this.handleLogOut} profile={userProfile} handleEditorClose={this.handleEditorClose}/>
             <MessageList 
                 oponentProfile={oponentProfile}
                 userProfile={userProfile}
                 threadId={threadId}
                 username={userName}
                 connection={this.connection}/>
-            <SendMessageForm sendMessage={this.sendMessage} typing={this.handleTyping} threadId={threadId}/>
+            <SendMessageForm sendMessage={this.handlerSendMessage()} typing={this.handleTyping} threadId={threadId}/>
             <ThreadList 
                 profile={userProfile}
                 threadId={threadId}

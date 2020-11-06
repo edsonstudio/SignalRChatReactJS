@@ -12,8 +12,6 @@ const withAuth = (Wrapped) => {
                 this.props.history.push('/Login');
             }
             this.update(user);
-            
-            
         };
 
         update = (user) => {
@@ -27,7 +25,7 @@ const withAuth = (Wrapped) => {
 
             if(!user){
                 return (<div>Loading</div>);
-            };
+            }
 
             return <Wrapped {...this.props} user={this.state.user}/>
         };

@@ -59,11 +59,10 @@ const createThread = async (oponentViewModel, accessToken) => {
     return await result;
 };
 
-const sendMessageToApi = async (messageViewModel, accessToken) => {
-    const result = await Axios.post(`${_baseUrl}Hey/send`, messageViewModel, {
+const sendMessageToApi = (messageViewModel, accessToken) => {
+    return Axios.post(`${_baseUrl}Hey/send`, messageViewModel, {
         headers: authHeader(accessToken)
     });
-    return await result;
 };
 
 const searchForMessageInThread = async (accessToken, params) => {

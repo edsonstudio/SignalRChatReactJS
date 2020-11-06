@@ -13,9 +13,13 @@ class SendMessageForm extends Component {
     }
     
     handleChange(e) {
+        console.log("HANDLER TYPING");
+        console.log(e);
+
         this.setState({
             message: e.target.value
         })
+
         this.props.typing(e.target);
     }
     

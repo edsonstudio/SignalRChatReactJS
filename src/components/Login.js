@@ -7,14 +7,17 @@ import { login } from '../services';
 
 export default class Login extends Component {
 
-    state = {
-        email: null,
-        password: null, 
-        formErrors: {
-            email: '',
-            password: ''
-        }
-    };
+    constructor(){
+        super()
+        this.state = {
+            email: null,
+            password: null, 
+            formErrors: {
+                email: '',
+                password: ''
+            }
+        };
+    }
 
     componentDidMount(){
         localStorage.removeItem('user-data');
